@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2b4c7e" />
+  <title>Talantul în Negoț — Școala Duminicală Maranata Ghiroda</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-title">Talantul în Negoț</span>
+        <span class="brand-sub">Maranata Ghiroda</span>
+      </div>
+    </header>
+
+    <nav id="main-nav" class="main-nav">
+      <a href="#/concurenti" data-route="concurenti">👤 Concurenți</a>
+      <a href="#/prezenta" data-route="prezenta">📅 Prezență</a>
+      <a href="#/note" data-route="note">📈 Note</a>
+      <a href="#/capitole" data-route="capitole">📖 Capitole parcurse</a>
+      <a href="#/quiz" data-route="quiz">❓ Întrebare</a>
+      <a href="#/indisciplina" data-route="indisciplina">🚩 Indisciplină</a>
+      <a href="#/raport-indisciplina" data-route="raport-indisciplina">📊 Raport indisciplină</a>
+    </nav>
+
+    <main id="view"></main>
+
+    <div id="toast-root"></div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
