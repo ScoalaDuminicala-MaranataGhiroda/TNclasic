@@ -5,10 +5,19 @@ import { toast } from '../components/toast.js';
 export async function renderQuiz(view) {
   view.innerHTML = `
     <h1>Întrebare</h1>
-    <div class="card" id="quiz-host"><p class="hint">Se pregătește o întrebare…</p></div>
+    <div class="card" id="quiz-host">
+      <div class="empty-state" style="padding: 40px 10px;">
+        <p>Apasă butonul de mai jos pentru a extrage o întrebare. <br><small>(Atenție: odată generată, întrebarea va fi marcată ca folosită!)</small></p>
+        <button class="btn" id="start-quiz-btn" style="margin-top: 16px;">Arată întrebarea</button>
+      </div>
+    </div>
   `;
   const host = view.querySelector('#quiz-host');
-  await loadNextQuestion(host);
+
+  view.querySelector('#start-quiz-btn').addEventListener('click', async () => {
+    host.innerHTML = '<p class="hint">Se pregătește o întrebare...</p>';
+    await loadNextQuestion(host);
+  });
 }
 
 async function loadNextQuestion(host) {
