@@ -1,24 +1,90 @@
 [
   {
     "id": "1SAM-1-001",
-    "text": "Cum se numea mama lui Samuel?",
+    "text": "Câte soții a avut Elcana, tatăl lui Samuel (1 Sam. 1:2)?",
     "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "correct": 1
+  },
+  {
+    "id": "1SAM-1-002",
+    "text": "Cine era tatăl lui Samuel (1 Sam. 1:1)?",
+    "options": [
+      "Hofni",
+      "Hețron",
+      "Nahșon",
+      "Elcana"
+    ],
+    "correct": 3
+  },
+  {
+    "id": "1SAM-1-003",
+    "text": "Cine a fost mama lui Samuel (1 Samuel 1:20)?",
+    "options": [
+      "Penina",
+      "Țipora",
       "Ana",
-      "Peninina",
-      "Mical",
-      "Abigail"
+      "Iochebed"
+    ],
+    "correct": 2
+  },
+  {
+    "id": "1SAM-1-004",
+    "text": "Din ce seminție era Elcana, tatăl lui Samuel (1 Samuel 1:1)?",
+    "options": [
+      "Efraim",
+      "Beniamin",
+      "Zabulon",
+      "Iuda"
     ],
     "correct": 0
   },
   {
-    "id": "1SAM-1-002",
-    "text": "În ce cetate locuia familia lui Elcana?",
+    "id": "1SAM-1-005",
+    "text": "Din ce familie făcea parte Elcana, tatăl lui Samuel (1 Samuel 1:1)?",
     "options": [
-      "Betleem",
-      "Ramataim-Țofim",
-      "Silo",
-      "Hebron"
+      "Lui Elton",
+      "Lui Țuf",
+      "Lui Refaim",
+      "Lui Hețron"
     ],
     "correct": 1
+  },
+  {
+    "id": "1SAM-1-006",
+    "text": "Care era numele celeilalte soții a lui Elcana (1 Samuel 1:2)?",
+    "options": [
+      "Penina",
+      "Debora",
+      "Maria",
+      "Orpa"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "1SAM-1-007",
+    "text": "Unde mergea Elcana an de an ca să se închine și să aducă jertfe Domnului (1 Samuel 1:3)?",
+    "options": [
+      "Ierusalim",
+      "Betel",
+      "Silo",
+      "Ghibeon"
+    ],
+    "correct": 2
+  },
+  {
+    "id": "1SAM-1-008",
+    "text": "Cine a fost tatăl lui Hofni și Fineas (1 Samuel 1:3)?",
+    "options": [
+      "Eli",
+      "Icabod",
+      "Elcana",
+      "Gherșom"
+    ],
+    "correct": 0
   }
 ]
