@@ -1,5 +1,6 @@
 import { listCompetitors, getAttendanceOverview, getOrCreateSession, saveAttendance } from '../api.js';
 import { toast } from '../components/toast.js';
+import { openModal } from '../components/modal.js';
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -9,11 +10,21 @@ export async function renderAttendance(view) {
   const [competitors, overview] = await Promise.all([listCompetitors(), getAttendanceOverview()]);
   const { sessions, records } = overview;
 
-  // total prezențe per concurent
+// total prezențe și datele exacte per concurent
   const totals = new Map();
-  for (const c of competitors) totals.set(c.id, 0);
+  const presentDates = new Map();
+  const sessionDatesMap = new Map(sessions.map(s => [s.id, s.session_date]));
+
+  for (const c of competitors) {
+    totals.set(c.id, 0);
+    presentDates.set(c.id, []);
+  }
+
   for (const r of records) {
-    if (Number(r.present) === 1) totals.set(r.competitor_id, (totals.get(r.competitor_id) || 0) + 1);
+    if (Number(r.present) === 1) {
+      totals.set(r.competitor_id, (totals.get(r.competitor_id) || 0) + 1);
+      presentDates.get(r.competitor_id).push(sessionDatesMap.get(r.session_id));
+    }
   }
 
   let selectedDate = todayISO();
@@ -84,19 +95,44 @@ export async function renderAttendance(view) {
       <h2>Total prezențe pe concurent</h2>
       ${competitors.length === 0 ? '<p class="empty-state">—</p>' : `
       <table class="responsive">
-        <thead><tr><th>Concurent</th><th>Nr. prezențe</th><th>Din ${sessions.length} întâlniri</th></tr></thead>
+        <thead><tr><th>Concurent</th><th>Nr. prezențe</th><th>Datele prezențelor</th></tr></thead>
         <tbody>
           ${competitors.map((c) => `
             <tr>
               <td data-label="Concurent">${c.last_name} ${c.first_name}</td>
-              <td data-label="Nr. prezențe">${totals.get(c.id) || 0}</td>
-              <td data-label="Din">${sessions.length}</td>
+              <td data-label="Nr. prezențe">${totals.get(c.id) || 0} / ${sessions.length}</td>
+              <td data-label="Datele prezențelor">
+                ${presentDates.get(c.id).length > 0
+      ? `<button class="btn secondary small btn-view-dates" data-id="${c.id}">Vezi datele</button>`
+      : '-'}
+              </td>
             </tr>
           `).join('')}
         </tbody>
       </table>`}
     </div>
   `;
+
+  // Atașăm evenimentele pentru butoanele "Vezi datele"
+  view.querySelectorAll('.btn-view-dates').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const compId = Number(e.target.dataset.id);
+      const c = competitors.find(x => x.id === compId);
+      const dates = presentDates.get(compId).sort();
+
+      const close = openModal(`
+        <h2>Prezențe: ${c.last_name} ${c.first_name}</h2>
+        <ul style="margin: 16px 0; padding-left: 20px; line-height: 1.6;">
+          ${dates.map(d => `<li>${d}</li>`).join('')}
+        </ul>
+        <button class="btn" id="close-dates-modal">Închide</button>
+      `, {
+        onMount: (modalEl) => {
+          modalEl.querySelector('#close-dates-modal').addEventListener('click', () => close());
+        }
+      });
+    });
+  });
 
   const formHost = view.querySelector('#attendance-form');
   renderForm();

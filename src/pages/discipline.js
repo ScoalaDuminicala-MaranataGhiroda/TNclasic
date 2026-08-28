@@ -7,18 +7,38 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+let sortKey = 'last_name';
+let sortDir = 'asc';
+
 export async function renderDiscipline(view) {
   const competitors = await listCompetitors();
-
   view.innerHTML = `
     <h1>Indisciplină</h1>
     <p class="hint">Notează un incident de indisciplină. Concurentul va primi 3 întrebări din capitolele parcurse; în funcție de câte răspunde corect, primește cartonaș galben sau roșu.</p>
-    <div class="card">
-      ${competitors.length === 0 ? '<p class="empty-state">Adaugă mai întâi concurenți.</p>' : `
+    <div class="card" id="table-host"></div>
+  `;
+
+  function drawTable(host, rows) {
+    const sorted = [...rows].sort((a, b) => {
+      const va = a[sortKey];
+      const vb = b[sortKey];
+      if (typeof va === 'string') return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      return sortDir === 'asc' ? va - vb : vb - va;
+    });
+
+    const arrow = (key) => (sortKey === key ? (sortDir === 'asc' ? ' ↑' : ' ↓') : '');
+
+    host.innerHTML = rows.length === 0 ? '<p class="empty-state">Adaugă mai întâi concurenți.</p>' : `
       <table class="responsive">
-        <thead><tr><th>Concurent</th><th>Categorie</th><th></th></tr></thead>
+        <thead>
+          <tr>
+            <th class="sortable" data-key="last_name">Concurent${arrow('last_name')}</th>
+            <th class="sortable" data-key="category">Categorie${arrow('category')}</th>
+            <th></th>
+          </tr>
+        </thead>
         <tbody>
-          ${competitors.map((c) => `
+          ${sorted.map((c) => `
             <tr data-id="${c.id}">
               <td data-label="Concurent">${c.last_name} ${c.first_name}</td>
               <td data-label="Categorie">${c.category}</td>
@@ -26,18 +46,33 @@ export async function renderDiscipline(view) {
             </tr>
           `).join('')}
         </tbody>
-      </table>`}
-    </div>
-  `;
+      </table>
+    `;
 
-  view.querySelectorAll('.btn-flag').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const tr = e.target.closest('tr');
-      const id = Number(tr.dataset.id);
-      const competitor = competitors.find((c) => c.id === id);
-      startDisciplineFlow(competitor);
+    host.querySelectorAll('th.sortable').forEach((th) => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.key;
+        if (sortKey === key) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortKey = key;
+          sortDir = 'asc';
+        }
+        drawTable(host, rows);
+      });
     });
-  });
+
+    host.querySelectorAll('.btn-flag').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const tr = e.target.closest('tr');
+        const id = Number(tr.dataset.id);
+        const competitor = competitors.find((c) => c.id === id);
+        startDisciplineFlow(competitor);
+      });
+    });
+  }
+
+  drawTable(view.querySelector('#table-host'), competitors);
 }
 
 async function startDisciplineFlow(competitor) {
