@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1SAM-1-001",
+    "text": "Cum se numea mama lui Samuel?",
+    "options": [
+      "Ana",
+      "Peninina",
+      "Mical",
+      "Abigail"
+    ],
+    "correct": 0
+  },
+  {
+    "id": "1SAM-1-002",
+    "text": "În ce cetate locuia familia lui Elcana?",
+    "options": [
+      "Betleem",
+      "Ramataim-Țofim",
+      "Silo",
+      "Hebron"
+    ],
+    "correct": 1
+  }
+]

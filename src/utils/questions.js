@@ -1,17 +1,9 @@
-// ---------------------------------------------------------------------------
-// Banca de întrebări e statică și e "împachetată" în build (import JSON),
-// deci nu costă nimic din limita de citiri Turso. Structura fișierelor:
-//   data/questions/1-samuel.json  -> { book: "1SAM", chapters: { "1": [...], "2": [...] } }
-//   data/questions/2-samuel.json  -> { book: "2SAM", chapters: { "1": [...], ... } }
-// Fiecare întrebare: { id, text, options: string[], correct: number }
-// id-ul TREBUIE să fie unic global (convenție: "1SAM-3-012" = cartea-capitol-secvență)
-// ---------------------------------------------------------------------------
-import book1Samuel from '../../data/questions/1-samuel.json';
-import book2Samuel from '../../data/questions/2-samuel.json';
+const samuel1Files = import.meta.glob('../../data/questions/1-samuel/*.json', { eager: true });
+const samuel2Files = import.meta.glob('../../data/questions/2-samuel/*.json', { eager: true });
 
 export const BOOKS = {
-  '1SAM': { label: '1 Samuel', chapterCount: 31, data: book1Samuel },
-  '2SAM': { label: '2 Samuel', chapterCount: 24, data: book2Samuel },
+  '1SAM': { label: '1 Samuel', chapterCount: 31 },
+  '2SAM': { label: '2 Samuel', chapterCount: 24 },
 };
 
 let flatCache = null;
@@ -20,14 +12,26 @@ let flatCache = null;
 export function getAllQuestionsFlat() {
   if (flatCache) return flatCache;
   const out = [];
-  for (const bookKey of Object.keys(BOOKS)) {
-    const chapters = BOOKS[bookKey].data.chapters || {};
-    for (const chapterStr of Object.keys(chapters)) {
-      for (const q of chapters[chapterStr]) {
-        out.push({ ...q, book: bookKey, chapter: Number(chapterStr) });
+
+  function processFiles(filesMap, bookKey) {
+    for (const path in filesMap) {
+      // Extragem numărul capitolului de la finalul numelui fișierului (ex: 1-samuel-15.json -> 15)
+      const match = path.match(/(\d+)\.json$/);
+      if (!match) continue;
+
+      const chapter = Number(match[1]);
+      // Vite pune conținutul JSON în `.default`
+      const questions = filesMap[path].default || filesMap[path];
+
+      for (const q of questions) {
+        out.push({ ...q, book: bookKey, chapter });
       }
     }
   }
+
+  processFiles(samuel1Files, '1SAM');
+  processFiles(samuel2Files, '2SAM');
+
   flatCache = out;
   return out;
 }
